@@ -165,4 +165,3 @@ Released under the [MIT License](LICENSE) — free to use in your projects.
 
 ---
 
-⭐ **Star this repo** if you find it useful — it helps others discover it!
