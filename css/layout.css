@@ -1,0 +1,450 @@
+/* ============================================
+   Layout — App Shell, Split Panes, Responsive
+   ============================================ */
+
+.app {
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ============ Header ============ */
+.app-header {
+    height: var(--header-height);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: 0 var(--space-5);
+    position: sticky;
+    top: 0;
+    z-index: var(--z-header);
+    background: var(--glass);
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-width: 0;
+}
+
+.brand-mark {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+    color: var(--accent-contrast);
+    font-size: 16px;
+    box-shadow: 0 4px 14px var(--accent-soft);
+}
+
+.brand-text { min-width: 0; }
+
+.brand-text h1 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.brand-text p {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-shrink: 0;
+}
+
+/* ============ Mobile tab bar ============ */
+.mobile-tabbar {
+    display: none;
+    flex-shrink: 0;
+    gap: var(--space-1);
+    margin: var(--space-3) var(--space-3) 0;
+    padding: 4px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+}
+
+.mobile-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-2);
+    transition: all var(--transition-fast);
+}
+
+.mobile-tab.active {
+    background: var(--accent-soft);
+    color: var(--accent);
+}
+
+/* ============ Workspace / split panes ============ */
+.workspace {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    padding: var(--space-4) var(--space-5);
+    gap: 0;
+    --split: 50%;
+}
+
+.pane {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-1);
+    overflow: hidden;
+}
+
+.editor-pane { flex: 0 0 var(--split); }
+.preview-pane { flex: 1 1 0; position: relative; }
+
+.pane-divider {
+    flex: 0 0 10px;
+    display: grid;
+    place-items: center;
+    cursor: col-resize;
+    touch-action: none;
+    user-select: none;
+}
+
+.pane-divider .divider-grip {
+    width: 4px;
+    height: 44px;
+    border-radius: var(--radius-full);
+    background: var(--border-default);
+    transition: background var(--transition-fast), height var(--transition-fast);
+}
+
+.pane-divider:hover .divider-grip,
+.pane-divider.dragging .divider-grip {
+    background: var(--accent);
+    height: 64px;
+}
+
+body.is-resizing {
+    cursor: col-resize;
+    user-select: none;
+}
+
+body.is-resizing .markdown-preview,
+body.is-resizing .editor-input {
+    pointer-events: none;
+}
+
+/* ============ Pane chrome ============ */
+.pane-header {
+    height: var(--pane-header-height);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: 0 var(--space-3) 0 var(--space-4);
+    border-bottom: 1px solid var(--border-subtle);
+    background: var(--bg-elevated);
+}
+
+.pane-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.9rem;
+    font-weight: 650;
+    color: var(--text-2);
+    min-width: 0;
+}
+
+.pane-title i { color: var(--accent); font-size: 0.85rem; }
+
+.pane-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+/* ============ Editor ============ */
+.editor-wrapper {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+    position: relative;
+    background: var(--bg-surface);
+}
+
+.line-numbers {
+    flex-shrink: 0;
+    width: 52px;
+    min-height: 0;
+    padding: var(--space-4) var(--space-2) var(--space-6) 0;
+    text-align: right;
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    background: var(--bg-surface);
+    border-inline-end: 1px solid var(--border-subtle);
+    white-space: pre;
+    overflow: hidden;
+    user-select: none;
+}
+
+.line-numbers .line-number { display: block; min-height: 1.6em; }
+
+.editor-input {
+    flex: 1;
+    min-width: 0;
+    padding: var(--space-4) var(--space-4) var(--space-6) var(--space-3);
+    background: transparent;
+    border: none;
+    outline: none;
+    resize: none;
+    color: var(--text-1);
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    line-height: 1.6;
+    white-space: pre;
+    overflow: auto;
+    tab-size: 2;
+}
+
+.editor-input.rtl-text {
+    direction: rtl;
+    text-align: right;
+    font-family: var(--font-persian);
+    font-size: 15px;
+}
+
+.editor-input::placeholder { color: var(--text-muted); }
+
+/* Status bar */
+.status-bar {
+    height: var(--statusbar-height);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: 0 var(--space-4);
+    border-top: 1px solid var(--border-subtle);
+    background: var(--bg-elevated);
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.status-sep {
+    width: 1px;
+    height: 12px;
+    background: var(--border-default);
+    flex-shrink: 0;
+}
+
+.status-flex { flex: 1; }
+
+#readingTime { color: var(--accent); font-weight: 600; }
+
+/* ============ Preview ============ */
+.preview-wrapper {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    /* clip — NOT hidden: a hidden overflow box is still a scroll
+       container, and scrollIntoView/legacy sync could scroll it into
+       blank space (the "empty bottom half" bug). clip never scrolls. */
+    overflow: clip;
+}
+
+.markdown-preview {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: var(--space-6) var(--space-6) 4rem;
+    overscroll-behavior: contain;
+}
+
+/* ============ Outline slide-over ============ */
+.outline-panel {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: 0;
+    width: min(320px, 85%);
+    display: flex;
+    flex-direction: column;
+    background: var(--glass);
+    backdrop-filter: blur(18px) saturate(1.4);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    border-inline-start: 1px solid var(--border-subtle);
+    box-shadow: var(--shadow-2);
+    z-index: 10;
+    transform: translateX(100%);
+    transition: transform 0.28s var(--ease-smooth);
+}
+
+html[dir='rtl'] .outline-panel { transform: translateX(-100%); }
+
+.outline-panel.open { transform: translateX(0); }
+
+.outline-header {
+    height: var(--pane-header-height);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--space-3) 0 var(--space-4);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.outline-header h3 {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: 0.9rem;
+    font-weight: 650;
+    color: var(--text-2);
+}
+
+.outline-header h3 i { color: var(--accent); font-size: 0.85rem; }
+
+.outline-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--space-2);
+}
+
+.outline-item {
+    display: block;
+    width: 100%;
+    text-align: start;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    font-size: 0.82rem;
+    color: var(--text-2);
+    line-height: 1.45;
+    border-inline-start: 2px solid transparent;
+    transition: background var(--transition-fast), color var(--transition-fast);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.outline-item:hover {
+    background: var(--bg-hover);
+    color: var(--text-1);
+}
+
+.outline-item.active {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-inline-start-color: var(--accent);
+    font-weight: 600;
+}
+
+.outline-empty {
+    padding: var(--space-5);
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.outline-backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: 9;
+    background: rgba(0, 0, 0, 0.25);
+}
+
+/* ============ Fullscreen (real Fullscreen API) ============ */
+.preview-pane:fullscreen {
+    border-radius: 0;
+    border: none;
+    background: var(--bg-surface);
+}
+
+.preview-pane.is-fullscreen {
+    animation: zoomIn 0.2s var(--ease-smooth);
+}
+
+/* ============ Footer ============ */
+.app-footer {
+    flex-shrink: 0;
+    padding: var(--space-2) var(--space-5);
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* ============ Responsive ============ */
+@media (max-width: 1023px) {
+    .mobile-tabbar { display: flex; }
+
+    .workspace {
+        padding: var(--space-3);
+        --split: 50%;
+    }
+
+    .pane-divider { display: none; }
+
+    .editor-pane,
+    .preview-pane { flex: 1 1 100%; min-height: 0; }
+
+    body[data-mobile-view='editor'] .preview-pane { display: none; }
+    body[data-mobile-view='preview'] .editor-pane { display: none; }
+}
+
+@media (max-width: 640px) {
+    :root { --header-height: 58px; }
+
+    .app-header { padding: 0 var(--space-3); }
+    .brand-text p { display: none; }
+    .brand-mark { width: 34px; height: 34px; font-size: 14px; }
+    .btn-label, .btn-caret { display: none; }
+
+    .workspace { padding: var(--space-2); }
+    .markdown-preview { padding: var(--space-4) var(--space-4) 3rem; }
+
+    .status-bar { gap: var(--space-3); }
+    #cursorPos, .status-sep { display: none; }
+
+    .app-footer { padding: var(--space-2); }
+}
+
+/* Desktop: hide tabbar */
+@media (min-width: 1024px) {
+    body[data-mobile-view] .editor-pane,
+    body[data-mobile-view] .preview-pane { display: flex; }
+}
