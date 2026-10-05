@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="dark" data-accent="indigo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Advanced Markdown Viewer — professional live markdown editor with RTL support, KaTeX math, Mermaid diagrams and standalone HTML export.">
+    <title>Advanced Markdown Viewer — Professional Markdown Processor</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>">
+
+    <!-- Prevent theme flash: apply saved theme/accent before first paint -->
+    <script>
+    (function () {
+        try {
+            var s = JSON.parse(localStorage.getItem('mdv-settings') || '{}');
+            var theme = s.theme || (window.matchMedia && matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+            document.documentElement.dataset.theme = theme;
+            if (s.accent) document.documentElement.dataset.accent = s.accent;
+        } catch (e) { /* keep defaults */ }
+    })();
+    </script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/5.1.1/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.8/purify.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" id="highlightThemeDark">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" id="highlightThemeLight" disabled>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="styles.css?v=2.8">
+
+    <!-- Language System -->
+    <script src="lang.js?v=2.8"></script>
+</head>
+<body data-mobile-view="editor">
+    <div class="app">
+        <!-- ============ Header ============ -->
+        <header class="app-header">
+            <div class="brand">
+                <span class="brand-mark"><i class="fas fa-file-code"></i></span>
+                <div class="brand-text">
+                    <h1 data-lang="app-title">Advanced Markdown Viewer</h1>
+                    <p data-lang="app-subtitle">Professional markdown processor with advanced features</p>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <button class="icon-btn lang-pill" id="langToggle" data-lang-title="lang-toggle" title="Change Language">
+                    <i class="fas fa-language"></i>
+                    <span class="lang-code">EN</span>
+                </button>
+
+                <button class="icon-btn" id="themeToggle" data-lang-title="theme-toggle" title="Toggle Theme">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
+
+                <div class="popover-anchor">
+                    <button class="icon-btn" id="settingsBtn" data-lang-title="settings-btn" title="Settings" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-sliders"></i>
+                    </button>
+                    <div class="popover settings-popover" id="settingsPopover" hidden>
+                        <div class="popover-section">
+                            <label class="popover-row" for="rtlToggle">
+                                <span data-lang="rtl-label">RTL Text</span>
+                                <span class="switch"><input type="checkbox" id="rtlToggle"><span class="slider"></span></span>
+                            </label>
+                            <label class="popover-row" for="codeRtlToggle">
+                                <span data-lang="code-rtl-label">RTL Code Comments</span>
+                                <span class="switch"><input type="checkbox" id="codeRtlToggle"><span class="slider"></span></span>
+                            </label>
+                            <label class="popover-row" for="syncScrollToggle">
+                                <span data-lang="sync-scroll-label">Sync Scroll</span>
+                                <span class="switch"><input type="checkbox" id="syncScrollToggle" checked><span class="slider"></span></span>
+                            </label>
+                        </div>
+                        <div class="popover-section">
+                            <span class="popover-label" data-lang="accent-label">Accent Color</span>
+                            <div class="accent-swatches" id="accentSwatches">
+                                <button class="swatch" data-accent="indigo"  style="--sw:#6366f1" title="Indigo"  aria-label="Indigo"></button>
+                                <button class="swatch" data-accent="violet"  style="--sw:#8b5cf6" title="Violet"  aria-label="Violet"></button>
+                                <button class="swatch" data-accent="sky"     style="--sw:#0ea5e9" title="Sky"     aria-label="Sky"></button>
+                                <button class="swatch" data-accent="emerald" style="--sw:#10b981" title="Emerald" aria-label="Emerald"></button>
+                                <button class="swatch" data-accent="amber"   style="--sw:#f59e0b" title="Amber"   aria-label="Amber"></button>
+                                <button class="swatch" data-accent="rose"    style="--sw:#f43f5e" title="Rose"    aria-label="Rose"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ============ Mobile View Switcher ============ -->
+        <div class="mobile-tabbar" role="tablist">
+            <button class="mobile-tab active" id="tabEditor" data-mobile-tab="editor" role="tab" aria-selected="true">
+                <i class="fas fa-pen"></i><span data-lang="tab-editor">Write</span>
+            </button>
+            <button class="mobile-tab" id="tabPreview" data-mobile-tab="preview" role="tab" aria-selected="false">
+                <i class="fas fa-eye"></i><span data-lang="tab-preview">Preview</span>
+            </button>
+        </div>
+
+        <!-- ============ Workspace ============ -->
+        <main class="workspace" id="workspace">
+            <!-- Editor Pane -->
+            <section class="pane editor-pane" id="editorPane">
+                <div class="pane-header">
+                    <h2 class="pane-title"><i class="fas fa-pen-to-square"></i><span data-lang="editor-title">Markdown Editor</span></h2>
+                    <div class="pane-actions">
+                        <button class="tool-btn" id="openFileBtn" data-lang-title="open-btn" title="Open file"><i class="fas fa-folder-open"></i></button>
+                        <button class="tool-btn" id="copyBtn" data-lang-title="copy-btn" title="Copy"><i class="fas fa-copy"></i></button>
+                        <button class="tool-btn" id="clearBtn" data-lang-title="clear-btn" title="Clear"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+
+                <!-- Formatting Toolbar -->
+                <div class="editor-toolbar" id="editorToolbar" role="toolbar">
+                    <button class="tb-btn" data-cmd="bold" data-lang-title="tb-bold" title="Bold (Ctrl+B)"><i class="fas fa-bold"></i></button>
+                    <button class="tb-btn" data-cmd="italic" data-lang-title="tb-italic" title="Italic (Ctrl+I)"><i class="fas fa-italic"></i></button>
+                    <button class="tb-btn" data-cmd="strike" data-lang-title="tb-strike" title="Strikethrough"><i class="fas fa-strikethrough"></i></button>
+                    <button class="tb-btn" data-cmd="mark" data-lang-title="tb-mark" title="Highlight"><i class="fas fa-highlighter"></i></button>
+                    <span class="tb-sep"></span>
+                    <button class="tb-btn" data-cmd="h1" data-lang-title="tb-h1" title="Heading 1">H1</button>
+                    <button class="tb-btn" data-cmd="h2" data-lang-title="tb-h2" title="Heading 2">H2</button>
+                    <button class="tb-btn" data-cmd="h3" data-lang-title="tb-h3" title="Heading 3">H3</button>
+                    <span class="tb-sep"></span>
+                    <button class="tb-btn" data-cmd="quote" data-lang-title="tb-quote" title="Quote"><i class="fas fa-quote-left"></i></button>
+                    <button class="tb-btn" data-cmd="ul" data-lang-title="tb-ul" title="Bullet list"><i class="fas fa-list-ul"></i></button>
+                    <button class="tb-btn" data-cmd="ol" data-lang-title="tb-ol" title="Numbered list"><i class="fas fa-list-ol"></i></button>
+                    <button class="tb-btn" data-cmd="task" data-lang-title="tb-task" title="Task list"><i class="fas fa-list-check"></i></button>
+                    <span class="tb-sep"></span>
+                    <button class="tb-btn" data-cmd="inlinecode" data-lang-title="tb-inline-code" title="Inline code"><i class="fas fa-code"></i></button>
+                    <button class="tb-btn" data-cmd="codeblock" data-lang-title="tb-code-block" title="Code block"><i class="fas fa-file-code"></i></button>
+                    <button class="tb-btn" data-cmd="link" data-lang-title="tb-link" title="Link (Ctrl+K)"><i class="fas fa-link"></i></button>
+                    <button class="tb-btn" data-cmd="image" data-lang-title="tb-image" title="Image"><i class="fas fa-image"></i></button>
+                    <button class="tb-btn" data-cmd="table" data-lang-title="tb-table" title="Table"><i class="fas fa-table"></i></button>
+                    <button class="tb-btn" data-cmd="math" data-lang-title="tb-math" title="Math block"><i class="fas fa-square-root-variable"></i></button>
+                    <button class="tb-btn" data-cmd="hr" data-lang-title="tb-hr" title="Divider"><i class="fas fa-minus"></i></button>
+                    <span class="tb-flex"></span>
+                    <div class="popover-anchor">
+                        <button class="tb-btn" id="emojiBtn" data-lang-title="tb-emoji" title="Emoji"><i class="fas fa-face-smile"></i></button>
+                        <div class="popover emoji-popover" id="emojiPopover" hidden>
+                            <input type="text" id="emojiSearch" class="emoji-search" data-lang-placeholder="emoji-search" placeholder="Search emoji..." autocomplete="off">
+                            <div class="emoji-grid" id="emojiGrid"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Editor -->
+                <div class="editor-wrapper">
+                    <div class="line-numbers" id="lineNumbers" aria-hidden="true">1</div>
+                    <textarea id="markdownInput" class="editor-input" data-lang-placeholder="placeholder"
+                              placeholder="Write your Markdown content here..." spellcheck="false" wrap="off"></textarea>
+                </div>
+
+                <!-- Status Bar -->
+                <div class="status-bar">
+                    <span id="cursorPos">Ln 1, Col 1</span>
+                    <span class="status-sep"></span>
+                    <span id="charCount">0 characters</span>
+                    <span id="wordCount">0 words</span>
+                    <span id="lineCount">1 lines</span>
+                    <span class="status-flex"></span>
+                    <span id="readingTime"></span>
+                </div>
+            </section>
+
+            <!-- Divider -->
+            <div class="pane-divider" id="paneDivider" role="separator" aria-orientation="vertical" title="Drag to resize">
+                <div class="divider-grip"></div>
+            </div>
+
+            <!-- Preview Pane -->
+            <section class="pane preview-pane" id="previewPane">
+                <div class="pane-header">
+                    <h2 class="pane-title"><i class="fas fa-eye"></i><span data-lang="preview-title">Preview</span></h2>
+                    <div class="pane-actions">
+                        <button class="tool-btn" id="outlineBtn" data-lang-title="outline-btn" title="Outline"><i class="fas fa-list-ul"></i></button>
+                        <button class="tool-btn" id="fullscreenBtn" data-lang-title="fullscreen-btn" title="Fullscreen"><i class="fas fa-expand"></i></button>
+                        <div class="popover-anchor">
+                            <button class="tool-btn primary" id="exportBtn" data-lang-title="export-btn" title="Export" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-download"></i><span class="btn-label" data-lang="export-btn">Export</span><i class="fas fa-chevron-down btn-caret"></i>
+                            </button>
+                            <div class="popover export-menu" id="exportMenu" hidden>
+                                <button id="exportHtmlBtn"><i class="fas fa-file-code"></i><span data-lang="export-html">Download HTML</span></button>
+                                <button id="exportMdBtn"><i class="fab fa-markdown"></i><span data-lang="export-md">Download Markdown</span></button>
+                                <button id="exportCopyBtn"><i class="fas fa-clipboard"></i><span data-lang="export-copy-html">Copy HTML</span></button>
+                                <button id="exportPrintBtn"><i class="fas fa-print"></i><span data-lang="export-print">Print / Save as PDF</span></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preview-wrapper" id="previewWrapper">
+                    <div id="markdownPreview" class="markdown-preview md-body">
+                        <div class="empty-state">
+                            <i class="fas fa-file-alt"></i>
+                            <h3 data-lang="empty-title">Waiting for content...</h3>
+                            <p data-lang="empty-desc">Start typing or drop a Markdown file anywhere</p>
+                        </div>
+                    </div>
+
+                    <!-- Outline Slide-over -->
+                    <aside class="outline-panel" id="outlinePanel" hidden>
+                        <div class="outline-header">
+                            <h3><i class="fas fa-list-ul"></i><span data-lang="outline-title">Outline</span></h3>
+                            <button class="tool-btn" id="outlineClose" data-lang-title="close-btn" title="Close"><i class="fas fa-times"></i></button>
+                        </div>
+                        <nav class="outline-list" id="outlineList"></nav>
+                    </aside>
+                    <div class="outline-backdrop" id="outlineBackdrop" hidden></div>
+                </div>
+            </section>
+        </main>
+
+        <!-- ============ Footer ============ -->
+        <footer class="app-footer">
+            <p data-lang="footer-credit">Crafted by Mohammad Kafshgar</p>
+        </footer>
+    </div>
+
+    <!-- Hidden file input -->
+    <input type="file" id="markdownFile" accept=".md,.markdown,.txt" hidden>
+
+    <!-- Drag & drop overlay -->
+    <div class="drop-overlay" id="dropOverlay" hidden>
+        <div class="drop-overlay-card">
+            <i class="fas fa-cloud-arrow-down"></i>
+            <p data-lang="drop-overlay-text">Drop your Markdown file to open it</p>
+        </div>
+    </div>
+
+    <!-- Sample Content Modal -->
+    <div class="modal" id="sampleModal">
+        <div class="modal-backdrop" data-modal-dismiss></div>
+        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="sampleModalTitle">
+            <div class="modal-header">
+                <h3 id="sampleModalTitle" data-lang="modal-title">Sample Markdown Content</h3>
+                <button class="icon-btn modal-close" id="modalClose" data-lang-title="close-btn" title="Close"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <p data-lang="modal-body">Would you like to load sample Markdown content?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn ghost" id="modalCancel" data-lang="modal-cancel">Cancel</button>
+                <button class="btn primary" id="modalConfirm" data-lang="modal-confirm">Yes, Load Sample</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Generic Confirm Modal -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-backdrop" data-modal-dismiss></div>
+        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+            <div class="modal-header">
+                <h3 id="confirmTitle" data-lang="confirm-title">Are you sure?</h3>
+                <button class="icon-btn modal-close" id="confirmClose" data-lang-title="close-btn" title="Close"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body"><p id="confirmBody"></p></div>
+            <div class="modal-footer">
+                <button class="btn ghost" id="confirmCancel" data-lang="modal-cancel">Cancel</button>
+                <button class="btn danger" id="confirmOk" data-lang="confirm-ok">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Modular JavaScript -->
+    <script src="js/config.js?v=2.8"></script>
+    <script src="js/utils.js?v=2.8"></script>
+    <script src="js/emoji-data.js?v=2.8"></script>
+    <script src="js/emoji.js?v=2.8"></script>
+    <script src="js/toast.js?v=2.8"></script>
+    <script src="js/markdown-ext.js?v=2.8"></script>
+    <script src="js/renderer.js?v=2.8"></script>
+    <script src="js/mermaid.js?v=2.8"></script>
+    <script src="js/diagrams.js?v=2.8"></script>
+    <script src="js/exporter.js?v=2.8"></script>
+    <script src="js/editor.js?v=2.8"></script>
+    <script src="js/handlers.js?v=2.8"></script>
+</body>
+</html>

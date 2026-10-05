@@ -1,0 +1,19 @@
+# Backup folder
+.backup-pre-refactor/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Dependencies
+node_modules/
+
+# Editor
+.vscode/
+.idea/
+
+# Personal publishing guide (local only)
+PUBLISH-FA.md

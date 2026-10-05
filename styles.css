@@ -1,0 +1,87 @@
+/* ============================================
+   Main Stylesheet — Import Hub & Global Overrides
+   Advanced Markdown Viewer · 2025
+   ============================================ */
+
+/* Import All CSS Modules */
+@import url('css/base.css?v=2.8');
+@import url('css/layout.css?v=2.8');
+@import url('css/components.css?v=2.8');
+@import url('css/markdown.css?v=2.8');
+@import url('css/animations.css?v=2.8');
+
+/* ---------- Reduced Motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ---------- App Shell Print Styles ---------- */
+/* The screen layout is a fixed-viewport flex shell; printing needs the
+   opposite: a free-flowing document. Every clipping/height constraint in
+   the ancestor chain must be released or content beyond page 1 vanishes. */
+@media print {
+    @page { size: A4; margin: 16mm 14mm; }
+
+    .app-header,
+    .mobile-tabbar,
+    .editor-pane,
+    .pane-divider,
+    .editor-toolbar,
+    .status-bar,
+    .app-footer,
+    .toast-container,
+    .modal,
+    .outline-panel,
+    .outline-backdrop,
+    .pane-header,
+    .drop-overlay {
+        display: none !important;
+    }
+
+    /* Release the app shell: no fixed height, no clipping anywhere */
+    .app,
+    .workspace,
+    .preview-pane,
+    .preview-wrapper,
+    .markdown-preview {
+        display: block !important;
+        overflow: visible !important;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+    }
+
+    body {
+        overflow: visible;
+        background: white;
+    }
+
+    .workspace { padding: 0; }
+
+    .preview-pane {
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        background: white;
+    }
+
+    .markdown-preview {
+        padding: 0;
+        max-width: 100%;
+    }
+}
+
+/* ---------- High Contrast ---------- */
+@media (prefers-contrast: more) {
+    :root {
+        --border-subtle: rgba(128, 128, 128, 0.5);
+        --border-default: rgba(128, 128, 128, 0.8);
+    }
+}
