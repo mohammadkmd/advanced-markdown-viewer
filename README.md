@@ -60,7 +60,7 @@
 - 📑 Outline slide-over panel with active-section highlighting
 - 🖥️ Real fullscreen preview (Fullscreen API)
 - 📱 Fully responsive — mobile gets Write/Preview tabs
-- ♿ Focus-visible states, `prefers-reduced-motion` and high-contrast support
+- 🐨 Focus-visible states, `prefers-reduced-motion` and high-contrast support
 
 ### Print / PDF Engineering
 - **Printing always produces a light document** — from the dark theme the app temporarily switches to light (syntax highlighting and Mermaid diagrams re-rendered), prints, then switches back
