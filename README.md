@@ -4,7 +4,7 @@
   <strong>A professional, feature-rich Markdown editor &amp; viewer with live preview, KaTeX math, Mermaid diagrams, full RTL/Persian support and standalone HTML export.</strong>
   <br>Built with vanilla JavaScript — no frameworks, no build step.
 </p>
-
+ 
 <p align="center">
   <a href="https://mohammadkmd.github.io/advanced-markdown-viewer/"><img alt="Live Demo" src="https://img.shields.io/badge/Live_Demo-GitHub_Pages-6366f1?logo=github&logoColor=white"></a>
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-10b981.svg"></a>
